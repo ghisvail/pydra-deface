@@ -1,0 +1,47 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pydra-deface"
+description = "Pydra workflow for defacing structural brain images"
+readme = "README.md"
+requires-python = ">=3.7"
+license = "Apache-2.0"
+keywords = ["pydra", "brain", "deface"]
+authors = [
+  { name = "Ghislain Vaillant", email = "ghislain.vaillant@icm-institute.org" },
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+  "Topic :: Scientific/Engineering",
+  "Topic :: Software Development :: Libraries",
+]
+dependencies = [
+  "pydra >=0.22",
+  "pydra-fsl ==0.0.2",
+  "typer >=0.7.0",
+]
+dynamic = ["version"]
+
+[project.urls]
+Documentation = "https://github.com/ghisvail/pydra-deface#readme"
+Issues = "https://github.com/ghisvail/pydra-deface/issues"
+Source = "https://github.com/ghisvail/pydra-deface"
+
+[project.scripts]
+pydra-deface = "pydra_deface.cli:app"
+
+[tool.hatch.version]
+path = "pydra_deface/__about__.py"
