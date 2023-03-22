@@ -4,17 +4,19 @@ import pydra
 def brain_mask_extraction(**kwargs) -> pydra.Workflow:
     from pydra.tasks import fsl
 
-    workflow = pydra.Workflow(input_spec=["template_image"], **kwargs)
+    workflow = pydra.Workflow(input_spec=["input_image"], **kwargs)
 
     workflow.add(
         fsl.BET(
             name="bet",
-            input_image=workflow.lzin.template_image,
+            input_image=workflow.lzin.input_image,
             save_brain_mask=True,
         )
     )
 
-    workflow.set_output({"template_mask": workflow.bet.lzout.brain_mask})
+    workflow.set_output(
+        {"brain_mask": workflow.bet.lzout.brain_mask}
+    )
 
     return workflow
 
@@ -33,7 +35,9 @@ def bias_correction(**kwargs) -> pydra.Workflow:
         )
     )
 
-    workflow.set_output({"output_image": workflow.fast.lzout.bias_corrected_image})
+    workflow.set_output(
+        {"bias_corrected_image": workflow.fast.lzout.bias_corrected_image}
+    )
 
     return workflow
 
@@ -73,7 +77,7 @@ def deface(**kwargs) -> pydra.Workflow:
         fsl.FLIRT(
             name="flirt_template_image",
             input_image=workflow.lzin.template_image,
-            reference_image=workflow.bias_correction.lzout.output_image,
+            reference_image=workflow.bias_correction.lzout.bias_corrected_image,
             cost_function="mutualinfo",
             verbose=True,
         )
@@ -83,7 +87,7 @@ def deface(**kwargs) -> pydra.Workflow:
         fsl.FLIRT(
             name="flirt_template_mask",
             input_image=workflow.lzin.template_mask,
-            reference_image=workflow.bias_correction.lzout.output_image,
+            reference_image=workflow.bias_correction.lzout.bias_corrected_image,
             input_matrix=workflow.flirt_template_image.lzout.output_matrix,
             apply_transformation=True,
             verbose=True,
@@ -93,7 +97,7 @@ def deface(**kwargs) -> pydra.Workflow:
     workflow.add(
         fslmaths.Mul(
             name="apply_mask",
-            input_image=workflow.fslreorient2std.lzout.output_image,
+            input_image=workflow.bias_correction.lzout.bias_corrected_image,
             other_image=workflow.flirt_template_mask.lzout.output_image,
             output_image=workflow.lzin.output_image,
         )
