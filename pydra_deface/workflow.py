@@ -3,7 +3,11 @@ import os
 import pydra
 
 
-def build(with_brain_mask_extraction: bool = True, **kwargs) -> pydra.Workflow:
+def build(
+    with_brain_mask_extraction: bool = True,
+    with_bias_field_correction: bool = True,
+    **kwargs,
+) -> pydra.Workflow:
     from . import tasks
 
     input_spec = [
@@ -24,18 +28,21 @@ def build(with_brain_mask_extraction: bool = True, **kwargs) -> pydra.Workflow:
             )
         )
 
+    template_mask = (
+        workflow.brain_mask_extraction.lzout.brain_mask
+        if with_brain_mask_extraction
+        else workflow.lzin.template_mask
+    )
+
     workflow.add(
         tasks.deface(
             name="deface",
             input_image=workflow.lzin.input_image,
             output_image=workflow.lzin.output_image,
             template_image=workflow.lzin.template_image,
-            template_mask=(
-                workflow.brain_mask_extraction.lzout.brain_mask
-                if with_brain_mask_extraction
-                else workflow.lzin.template_mask
-            ),
+            template_mask=template_mask,
             output_mask=workflow.lzin.output_mask,
+            with_bias_field_correction=with_bias_field_correction,
         )
     )
 

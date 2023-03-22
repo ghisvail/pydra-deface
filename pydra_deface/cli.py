@@ -30,6 +30,13 @@ def main(
         writable=True,
         resolve_path=True,
     ),
+    output_mask: pathlib.Path = typer.Option(
+        None,
+        help="Output defacing mask",
+        file_okay=True,
+        writable=True,
+        resolve_path=True,
+    ),
     template_image: pathlib.Path = typer.Option(
         None,
         "--template-image",
@@ -50,12 +57,10 @@ def main(
         readable=True,
         resolve_path=True,
     ),
-    output_mask: pathlib.Path = typer.Option(
-        None,
-        help="Output defacing mask",
-        file_okay=True,
-        writable=True,
-        resolve_path=True,
+    with_bias_field_correction: bool = typer.Option(
+        False,
+        "--with-bias-field-correction/--without-bias-field-correction",
+        help="Perform bias field correction to input image",
     ),
     cache_dir: pathlib.Path = typer.Option(
         None,
@@ -75,6 +80,7 @@ def main(
 
     wf = workflow.build(
         with_brain_mask_extraction=template_mask is None,
+        with_bias_field_correction=with_bias_field_correction,
         name="pydra_deface",
         cache_dir=cache_dir,
     )
