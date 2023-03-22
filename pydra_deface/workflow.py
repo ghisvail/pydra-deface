@@ -31,7 +31,7 @@ def build(with_brain_mask_extraction: bool = True, **kwargs) -> pydra.Workflow:
             output_image=workflow.lzin.output_image,
             template_image=workflow.lzin.template_image,
             template_mask=(
-                workflow.brain_extraction.lzout.template_mask
+                workflow.brain_mask_extraction.lzout.template_mask
                 if with_brain_mask_extraction
                 else workflow.lzin.template_mask
             ),

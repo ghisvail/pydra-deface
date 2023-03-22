@@ -35,6 +35,8 @@ def bias_correction(**kwargs) -> pydra.Workflow:
 
     workflow.set_output({"output_image": workflow.fast.lzout.bias_corrected_image})
 
+    return workflow
+
 
 def deface(**kwargs) -> pydra.Workflow:
     from pydra.tasks import fsl
