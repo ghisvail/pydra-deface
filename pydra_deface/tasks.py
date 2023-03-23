@@ -44,8 +44,7 @@ def bias_field_correction(**kwargs) -> pydra.Workflow:
 
 def deface(with_bias_field_correction: bool = False, **kwargs) -> pydra.Workflow:
     from pydra.tasks import fsl
-
-    from . import fslmaths
+    from pydra.tasks.fsl import fslmaths
 
     workflow = pydra.Workflow(
         input_spec=[
