@@ -30,7 +30,7 @@ classifiers = [
 ]
 dependencies = [
   "pydra >=0.22",
-  "pydra-fsl ==0.0.7",
+  "pydra-fsl ==0.0.9",
   "typer >=0.7.0",
 ]
 dynamic = ["version"]
