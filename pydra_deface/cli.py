@@ -78,6 +78,9 @@ def main(
 ) -> None:
     from . import workflow
 
+    if version:
+        raise typer.Exit()
+
     wf = workflow.build(
         with_brain_mask_extraction=template_mask is None,
         with_bias_field_correction=with_bias_field_correction,
