@@ -81,22 +81,19 @@ def deface(with_bias_field_correction: bool = False, **kwargs) -> pydra.Workflow
 
     workflow.add(
         fsl.FLIRT(
-            name="flirt_template_image",
+            name="flirt",
             input_image=workflow.lzin.template_image,
             reference_image=reference_image,
             cost_function="mutualinfo",
-            verbose=True,
         )
     )
 
     workflow.add(
-        fsl.FLIRT(
-            name="flirt_template_mask",
+        fsl.ApplyXFM(
+            name="apply_xfm",
             input_image=workflow.lzin.template_mask,
             reference_image=reference_image,
-            input_matrix=workflow.flirt_template_image.lzout.output_matrix,
-            apply_transformation=True,
-            verbose=True,
+            input_matrix=workflow.flirt.lzout.output_matrix,
         )
     )
 
@@ -104,14 +101,14 @@ def deface(with_bias_field_correction: bool = False, **kwargs) -> pydra.Workflow
         fslmaths.Mul(
             name="apply_mask",
             input_image=reference_image,
-            other_image=workflow.flirt_template_mask.lzout.output_image,
+            other_image=workflow.apply_xfm.lzout.output_image,
             output_image=workflow.lzin.output_image,
         )
     )
 
     workflow.set_output({
         "output_image": workflow.apply_mask.lzout.output_image,
-        "output_mask": workflow.flirt_template_mask.lzout.output_image,
+        "output_mask": workflow.apply_xfm.lzout.output_image,
     })
 
     return workflow
