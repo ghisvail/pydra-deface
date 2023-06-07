@@ -85,6 +85,7 @@ def deface(with_bias_field_correction: bool = False, **kwargs) -> pydra.Workflow
             input_image=workflow.lzin.template_image,
             reference_image=reference_image,
             cost_function="mutualinfo",
+            environment=pydra.engine.environments.Docker(image="fsl", tag="6.0.6.4")
         )
     )
 
@@ -94,6 +95,7 @@ def deface(with_bias_field_correction: bool = False, **kwargs) -> pydra.Workflow
             input_image=workflow.lzin.template_mask,
             reference_image=reference_image,
             input_matrix=workflow.flirt.lzout.output_matrix,
+            environment=pydra.engine.environments.Docker(image="fsl", tag="6.0.6.4")
         )
     )
 
@@ -103,6 +105,7 @@ def deface(with_bias_field_correction: bool = False, **kwargs) -> pydra.Workflow
             input_image=reference_image,
             other_image=workflow.apply_xfm.lzout.output_image,
             output_image=workflow.lzin.output_image,
+            environment=pydra.engine.environments.Docker(image="fsl", tag="6.0.6.4")
         )
     )
 
